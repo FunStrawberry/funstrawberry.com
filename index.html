@@ -1,0 +1,121 @@
+<html>
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.js"></script>
+    <script src="character.js"></script>
+    <script src="bullet.js"></script>
+    <script>
+        
+
+        const CANVAS_WIDTH = 900;
+        const CANVAS_HEIGHT = 900;
+        const MAX_ENEMIES = 50;
+
+        let p1 = null;
+        let enemies = [];
+        let bullets = [];
+
+        function setup() {
+            createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
+            frameRate(30);
+            p1 = new Character("Player 1",createVector(100, 100), createVector(0, 0), 100, 'warrior', 50);
+
+            // create a bunch of "enemy" characters with random positions, no velocity and put them in an array of size MAX_ENEMIES
+            for (let i = 0; i < MAX_ENEMIES; i++){
+                let x = Math.random() * CANVAS_WIDTH;
+                let y = Math.random() * CANVAS_HEIGHT;
+                enemies.push(new Character(`Enemy ${i}`,createVector(x,y), createVector(0, 0), 100, 'enemies', 50));
+            }
+
+        }
+
+        function draw() {
+            background(0);
+            handlePlayerInput();
+            p1.updateCharacter();
+            p1.draw();
+
+            // every 2 seconds add a new enemy
+            if (frameCount % 60 * 2 === 0){
+                let x = Math.random() * CANVAS_WIDTH;
+                let y = Math.random() * CANVAS_HEIGHT;
+                let edge = Math.floor(Math.random() * 4);
+                switch(edge) {
+                    case 0: // top edge
+                        y = 0;
+                        x = Math.random() * CANVAS_WIDTH;
+                        break;
+                    case 1: // right edge
+                        x = CANVAS_WIDTH;
+                        y = Math.random() * CANVAS_HEIGHT;
+                        break;
+                    case 2: // bottom edge
+                        y = CANVAS_HEIGHT;
+                        x = Math.random() * CANVAS_WIDTH;
+                        break;
+                    case 3: // left edge
+                        x = 0;
+                        y = Math.random() * CANVAS_HEIGHT;
+                        break;
+                }
+                enemies.push(new Character(`Enemy ${enemies.length}`,createVector(x,y), createVector(0, 0), 100, 'new', 50));
+            }
+
+            enemies.forEach((e,idx) => {
+                // make each enemy point toward p1 and move slowly in that direction
+                let dx = p1.positionVector.x - e.positionVector.x;
+                let dy = p1.positionVector.y - e.positionVector.y;
+                e.orientationAngle = atan2(dy, dx);
+                //e.velocityVector = createVector(dx, dy).normalize().mult(1.5);
+                
+                let remainingEnemies = enemies.slice(0, idx).concat(enemies.slice(idx + 1)).concat(p1);
+                e.updateCharacter(remainingEnemies);
+                e.draw()
+            });
+
+            bullets.forEach((e,idx) => {
+                e.update();
+                e.draw()
+            });
+        }
+
+        function handlePlayerInput(){
+            if (keyIsDown(87)) { // W key
+                p1.velocityVector.y -= 1;
+            }
+            if (keyIsDown(83)) { // S key
+                p1.velocityVector.y += 1;
+            }
+            if (keyIsDown(65)) { // A key
+                p1.velocityVector.x -= 1;
+            }
+            if (keyIsDown(68)) { // D key
+                p1.velocityVector.x += 1;
+            }
+
+            // enforce a maximum velocity
+            p1.velocityVector.limit(p1.maxSpeed);
+
+            // make the player point toward the mouse (sucker!)
+            let dx = mouseX - p1.positionVector.x;
+            let dy = mouseY - p1.positionVector.y;
+            p1.orientationAngle = atan2(dy, dx);
+        }
+
+    function mousePressed() {
+        let bulletSpeed = 1;
+        let bulletVelocity = p5.Vector.fromAngle(p1.orientationAngle).mult(bulletSpeed);
+        let positionVector = p1.positionVector.copy().add(bulletVelocity.mult(2));
+        let lifespan = 100;
+        let bullet = new Bullet(`Bullet ${bullets.length}`, positionVector, bulletVelocity, lifespan);
+        bullets.push(bullet);
+    }
+    </script>
+</head>
+
+<body>
+    <main>
+    </main>
+</body>
+
+</html>
