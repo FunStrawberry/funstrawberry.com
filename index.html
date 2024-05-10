@@ -4,12 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Right web</title>
-    <style>
-        img {
-            width: 900px;
-            height: auto
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
+    
+    /* Styles for tablets and desktops */
+    @media (min-width: 768px) {
+        .container {
+            width: 750px;
+            margin: 0 auto;
         }
-        </style>
+    }
+    
+    /* Styles for desktops */
+    @media (min-width: 992px) {
+        .container {
+            width: 970px;
+        }
+    }
+    
+    /* Styles for large desktops */
+    @media (min-width: 1200px) {
+        .container {
+            width: 1170px;
+        }
+    }
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-md-8">Main Content</div>
+            <div class="col-xs-12 col-md-4">Sidebar</div>
+        </div>
+    </div>
+    img, video {
+        max-width: 100%;
+        height: auto;
+    }
+
+        
 </head>
 <body>
     <h1>Crazy just like Life</h1>
@@ -136,6 +168,8 @@ strokeWeight(Math.sin((i + frameCount) / 3) * 10 + 7);
         }
 
         document.addEventListener('touchmove', preventTouchScroll, { passive: false });
+        /* Base styles that apply to all devices */
+
     </script>
 </head>
 
