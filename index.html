@@ -74,7 +74,7 @@
         }
 
         function setup() {
-            createCanvas(1547, 600);
+            createCanvas(500, 600);
             strokeWeight(9);
             stroke(255, 100);
         }
@@ -83,7 +83,16 @@
             background(0,100);
             fill(155)
             text(`x[1]:${x[1]},y[1]:${y[1]}`, 50, 50);
-            dragSegment(0, mouseX, mouseY);
+
+            let inputX, inputY
+           if (touches.length > 0) {
+            inputX = touches[0].x;
+            inputY = touches[0].y;
+           } else {
+            inputX = mouseX;
+            inputY = mouseY;
+           }
+            dragSegment(0, inputX, inputY);
             for (let i = 0; i < x.length - 1; i++) {
                 dragSegment(i + 1, x[i], y[i]);
             }
@@ -122,7 +131,6 @@ strokeWeight(Math.sin((i + frameCount) / 3) * 10 + 7);
             line(0, -20, segLength, -15);
             pop();
         }
-
     </script>
 </head>
 
