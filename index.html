@@ -131,6 +131,11 @@ strokeWeight(Math.sin((i + frameCount) / 3) * 10 + 7);
             line(0, -20, segLength, -15);
             pop();
         }
+        function preventTouchScroll(event) {
+            event.preventDefault();
+        }
+
+        document.addEventListener('touchmove', preventTouchScroll, { passive: false });
     </script>
 </head>
 
